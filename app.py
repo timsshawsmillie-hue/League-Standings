@@ -102,8 +102,8 @@ teams_list = [
     "Tottenham Hotspur",
 ]
 
-# --- TWO-COLUMN LAYOUT ---
-left_col, right_col = st.columns([1.2, 0.8], gap="large")
+# --- TWO-COLUMN LAYOUT WITH CONTROLLED WIDTHS ---
+_, left_col, right_col, _ = st.columns([0.5, 1.2, 1.2, 0.5], gap="large")
 
 # LEFT COLUMN: Title, horizontal buttons, and active forms
 with left_col:
