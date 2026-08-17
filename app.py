@@ -59,7 +59,7 @@ def set_local_background(image_file):
 set_local_background("stadium.jpg")
 
 
-st.title("🏆 Predict Dat Shit")
+st.title("Predict Dat Shit")
 st.write("Predict the final table! Every position (1-20) must be unique.")
 
 # --- DYNAMIC MENU BASED ON ADMIN LOGIN ---
