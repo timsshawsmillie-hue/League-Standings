@@ -122,7 +122,7 @@ left_col, middle_col, right_col = st.columns([1.2, 1.8, 1.2], gap="large")
 
 with left_col:
   st.markdown('<div class="left-container">', unsafe_allow_html=True)
-  st.title("🏆 Football Tipping League")
+  st.title("🏆 Hasbulla Sees The Future")
   st.write("Drag and drop the teams into your predicted 1st-20th order.")
 
   menu = st.radio(
