@@ -59,7 +59,14 @@ def set_local_background(image_file):
             color: white !important;
         }}
         
-        /* MOBILE OPTIMIZATION: Stack columns and make containers full width on phones */
+        /* Force single column full-width stack for sortables */
+        iframe[title="streamlit_sortables.sort_items"] {{
+            width: 100% !important;
+        }}
+        div.stMarkdown div iframe {{
+            width: 100% !important;
+        }}
+
         @media (max-width: 900px) {{
             [data-testid="stHorizontalBlock"] {{
                 flex-direction: column !important;
@@ -69,22 +76,9 @@ def set_local_background(image_file):
                 padding: 1rem !important;
             }}
         }}
-
-        /* Force sortable component into a single vertical column league table layout */
-        .sortable-list, [data-testid="stVerticalBlock"] div div div div iframe {{
-            display: flex !important;
-            flex-direction: column !important;
-        }}
-        
-      /* Force single column full-width stack for the sortable items */
-        iframe[title="streamlit_sortables.sort_items"] {
-            width: 100% !important;
-        }
-        div.stMarkdown div iframe {
-            width: 100% !important;
-        }
         </style>
         """
+    st.markdown(css, unsafe_allow_html=True)        """
     st.markdown(css, unsafe_allow_html=True)
 
 
