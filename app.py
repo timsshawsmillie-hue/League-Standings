@@ -19,6 +19,43 @@ def save_data(data):
 
 data = load_data()
 
+# --- BACKGROUND IMAGE CSS ---
+page_bg_img = """
+<style>
+[data-testid="stAppViewContainer"] {
+background-image: url("https://images.unsplash.com/photo-1508098682722-e99c43a406b2?q=80&w=1920&auto=format&fit=crop");
+background-size: cover;
+background-position: center;
+background-repeat: no-repeat;
+background-attachment: local;
+}
+
+[data-testid="stHeader"] {
+background: rgba(0,0,0,0);
+}
+
+[data-testid="stToolbar"] {
+right: 2rem;
+}
+
+/* Optional: Adds a dark transparent box behind your content to make text readable */
+.block-container {
+background-color: rgba(15, 23, 42, 0.85);
+color: white;
+padding: 2rem;
+border-radius: 1rem;
+margin-top: 2rem;
+}
+
+h1, h2, h3, p, label {
+color: white !important;
+}
+</style>
+"""
+
+st.markdown(page_bg_img, unsafe_allow_html=True)
+
+
 st.title("🏆 Predict Dat Shit")
 st.write("Predict the final table! Every position (1-20) must be unique.")
 
