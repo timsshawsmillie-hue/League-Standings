@@ -102,8 +102,8 @@ teams_list = [
     "Tottenham Hotspur",
 ]
 
-# --- PUSH BOXES TO THE FAR EDGES ---
-left_col, right_col = st.columns([1, 1], gap="large")
+# --- THREE-COLUMN LAYOUT TO CREATE A CLEAR MIDDLE GAP ---
+left_col, middle_col, right_col = st.columns([1.2, 1.8, 1.2], gap="large")
 
 # LEFT COLUMN: Title, horizontal buttons, and active forms
 with left_col:
