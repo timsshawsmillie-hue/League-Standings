@@ -29,7 +29,7 @@ def set_local_background(image_file):
   if os.path.exists(image_file):
     with open(image_file, "rb") as f:
       encoded_string = base64.b64encode(f.read()).decode()
-    css = """
+    css = f"""
         <style>
         [data-testid="stAppViewContainer"] {{
             background-image: url("data:image/jpeg;base64,{encoded_string}");
@@ -78,7 +78,6 @@ def set_local_background(image_file):
         }}
         </style>
         """
-    st.markdown(css, unsafe_allow_html=True)        """
     st.markdown(css, unsafe_allow_html=True)
 
 
@@ -180,7 +179,7 @@ with left_col:
     else:
       for player in list(predictions.keys()):
         c1, c2 = st.columns([3, 1])
-        c1.write(f"**{player}**")
+        c1.write(f"*{player}*")
         if c2.button(f"Del", key=f"del_{player}"):
           del data["predictions"][player]
           save_data(data)
