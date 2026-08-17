@@ -2,8 +2,8 @@ import base64
 import json
 import os
 import streamlit as st
+from streamlit_sortables import sort_items
 
-# Set page to wide mode to give space for columns
 st.set_page_config(layout="wide", page_title="Football Tipping League")
 
 DATA_FILE = "predictions.json"
@@ -24,7 +24,7 @@ def save_data(data):
 data = load_data()
 
 
-# --- LOCAL BACKGROUND IMAGE & STYLING ---
+# --- LOCAL BACKGROUND & MOBILE-RESPONSIVE CSS ---
 def set_local_background(image_file):
   if os.path.exists(image_file):
     with open(image_file, "rb") as f:
@@ -41,24 +41,33 @@ def set_local_background(image_file):
         [data-testid="stHeader"] {{
             background: rgba(0,0,0,0);
         }}
-        /* Main left box container */
         .left-container {{
-            background-color: rgba(15, 23, 42, 0.88);
+            background-color: rgba(15, 23, 42, 0.90);
             color: white;
-            padding: 2rem;
+            padding: 1.5rem;
             border-radius: 1rem;
-            margin-top: 5rem;
+            margin-top: 2rem;
         }}
-        /* Standalone right leaderboard container */
         .right-container {{
-            background-color: rgba(15, 23, 42, 0.88);
+            background-color: rgba(15, 23, 42, 0.90);
             color: white;
-            padding: 2rem;
+            padding: 1.5rem;
             border-radius: 1rem;
-            margin-top: 5rem;
+            margin-top: 2rem;
         }}
         h1, h2, h3, p, label {{
             color: white !important;
+        }}
+        
+        /* MOBILE OPTIMIZATION: Stack columns and make containers full width on phones */
+        @media (max-width: 900px) {{
+            [data-testid="stHorizontalBlock"] {{
+                flex-direction: column !important;
+            }}
+            .left-container, .right-container {{
+                margin-top: 1rem !important;
+                padding: 1rem !important;
+            }}
         }}
         </style>
         """
@@ -74,7 +83,6 @@ is_admin = admin_password == "football123"
 if is_admin:
   st.sidebar.success("Admin Unlocked!")
 
-# Define available options based on admin status
 menu_options = ["Submit Predictions"]
 if is_admin:
   menu_options.extend(["Set Actual Final Positions", "Admin Management"])
@@ -102,14 +110,13 @@ teams_list = [
     "Tottenham Hotspur",
 ]
 
-# --- THREE-COLUMN LAYOUT TO CREATE A CLEAR MIDDLE GAP ---
+# --- THREE-COLUMN LAYOUT (Desktop) / STACKED (Mobile) ---
 left_col, middle_col, right_col = st.columns([1.2, 1.8, 1.2], gap="large")
 
-# LEFT COLUMN: Title, horizontal buttons, and active forms
 with left_col:
   st.markdown('<div class="left-container">', unsafe_allow_html=True)
-  st.title("🏆 The Ultimate Football Tipping League")
-  st.write("Predict the final table! Every position (1-20) must be unique.")
+  st.title("🏆 Football Tipping League")
+  st.write("Drag and drop the teams into your predicted 1st-20th order.")
 
   menu = st.radio(
       "Choose an action",
@@ -120,37 +127,33 @@ with left_col:
   st.write("")
 
   if menu == "Submit Predictions":
-    st.header("Submit Your Predictions")
     player_name = st.text_input("Your Name")
     if player_name:
-      new_preds = {}
-      with st.form("prediction_form"):
-        for team in teams_list:
-          new_preds[team] = st.number_input(
-              team, min_value=1, max_value=20, value=1, step=1
-          )
+      user_saved_preds = data["predictions"].get(player_name, {})
+      if user_saved_preds:
+        sorted_teams_tuples = sorted(user_saved_preds.items(), key=lambda x: x[1])
+        current_list = [team for team, pos in sorted_teams_tuples]
+      else:
+        current_list = teams_list
 
-        submitted = st.form_submit_button("Save Predictions")
-        if submitted:
-          positions = list(new_preds.values())
-          if len(set(positions)) != 20:
-            st.error(
-                "❌ Error: Each position (1-20) must be used exactly once. You"
-                " have duplicates!"
-            )
-          else:
-            data["predictions"][player_name] = new_preds
-            save_data(data)
-            st.success(f"Predictions saved successfully for {player_name}!")
+      sorted_list = sort_items(current_list, key=f"sort_{player_name}")
+
+      if st.button("Save My Predictions"):
+        new_preds = {
+            team: index + 1 for index, team in enumerate(sorted_list)
+        }
+        data["predictions"][player_name] = new_preds
+        save_data(data)
+        st.success(f"Saved for {player_name}!")
 
   elif menu == "Set Actual Final Positions" and is_admin:
-    st.header("Admin: Set Actual Positions")
+    st.header("Admin: Set Actuals")
     actuals = data.get("teams", {})
     with st.form("actuals_form"):
       new_actuals = {}
       for team in teams_list:
         new_actuals[team] = st.number_input(
-            f"Actual pos for {team}",
+            f"Actual {team}",
             min_value=1,
             max_value=20,
             value=actuals.get(team, 1),
@@ -159,33 +162,30 @@ with left_col:
       if st.form_submit_button("Save Actuals"):
         data["teams"] = new_actuals
         save_data(data)
-        st.success("Actual positions updated!")
+        st.success("Updated!")
 
   elif menu == "Admin Management" and is_admin:
-    st.header("Admin: Manage Player Entries")
+    st.header("Admin: Manage")
     predictions = data.get("predictions", {})
     if not predictions:
-      st.write("No player entries found to manage.")
+      st.write("No entries yet.")
     else:
-      st.write(
-          "Here are all current submissions. Click 'Delete' to remove a player"
-          " entry."
-      )
       for player in list(predictions.keys()):
         c1, c2 = st.columns([3, 1])
-        c1.write(f"**{player}** ({len(predictions[player])} teams predicted)")
-        if c2.button(f"Delete", key=f"del_{player}"):
+        c1.write(f"**{player}**")
+        if c2.button(f"Del", key=f"del_{player}"):
           del data["predictions"][player]
           save_data(data)
-          st.success(f"Deleted entry for {player}!")
           st.rerun()
 
   st.markdown("</div>", unsafe_allow_html=True)
 
-# RIGHT COLUMN: Standalone Leaderboard Box
+with middle_col:
+  st.write("")  # Keeps the middle open to reveal Hasbulla on desktop
+
 with right_col:
   st.markdown('<div class="right-container">', unsafe_allow_html=True)
-  st.header("📊 Live Standings")
+  st.header("📊 Standings")
   actuals = data.get("teams", {})
   predictions = data.get("predictions", {})
 
