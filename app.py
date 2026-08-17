@@ -29,7 +29,7 @@ def set_local_background(image_file):
   if os.path.exists(image_file):
     with open(image_file, "rb") as f:
       encoded_string = base64.b64encode(f.read()).decode()
-    css = f"""
+    css = """
         <style>
         [data-testid="stAppViewContainer"] {{
             background-image: url("data:image/jpeg;base64,{encoded_string}");
