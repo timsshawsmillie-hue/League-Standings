@@ -45,7 +45,7 @@ def set_local_background(image_file):
             color: white;
             padding: 2rem;
             border-radius: 1rem;
-            margin-top: 2rem;
+            margin-top: 10rem;
         }}
         h1, h2, h3, p, label {{
             color: white !important;
