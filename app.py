@@ -19,41 +19,44 @@ def save_data(data):
 
 data = load_data()
 
-# --- BACKGROUND IMAGE CSS ---
-page_bg_img = """
-<style>
-[data-testid="stAppViewContainer"] {
-background-image: url("https://images.unsplash.com/photo-1508098682722-e99c43a406b2?q=80&w=1920&auto=format&fit=crop");
-background-size: cover;
-background-position: center;
-background-repeat: no-repeat;
-background-attachment: local;
-}
+import base64
 
-[data-testid="stHeader"] {
-background: rgba(0,0,0,0);
-}
+# --- LOCAL BACKGROUND IMAGE ---
 
-[data-testid="stToolbar"] {
-right: 2rem;
-}
 
-/* Optional: Adds a dark transparent box behind your content to make text readable */
-.block-container {
-background-color: rgba(15, 23, 42, 0.85);
-color: white;
-padding: 2rem;
-border-radius: 1rem;
-margin-top: 2rem;
-}
+def set_local_background(image_file):
+  if os.path.exists(image_file):
+    with open(image_file, "rb") as f:
+      encoded_string = base64.b64encode(f.read()).decode()
+    css = f"""
+        <style>
+        [data-testid="stAppViewContainer"] {{
+            background-image: url("data:image/jpeg;base64,{encoded_string}");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: local;
+        }}
+        [data-testid="stHeader"] {{
+            background: rgba(0,0,0,0);
+        }}
+        .block-container {{
+            background-color: rgba(15, 23, 42, 0.85);
+            color: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            margin-top: 2rem;
+        }}
+        h1, h2, h3, p, label {{
+            color: white !important;
+        }}
+        </style>
+        """
+    st.markdown(css, unsafe_allow_html=True)
 
-h1, h2, h3, p, label {
-color: white !important;
-}
-</style>
-"""
 
-st.markdown(page_bg_img, unsafe_allow_html=True)
+# Call the function (update "stadium.jpg" to match your uploaded filename)
+set_local_background("stadium.jpg")
 
 
 st.title("🏆 Predict Dat Shit")
