@@ -76,11 +76,13 @@ def set_local_background(image_file):
             flex-direction: column !important;
         }}
         
-        /* Style individual team items to look like clean table rows */
-        .sortable-item {{
+      /* Force single column full-width stack for the sortable items */
+        iframe[title="streamlit_sortables.sort_items"] {
             width: 100% !important;
-            margin-bottom: 5px !important;
-        }}
+        }
+        div.stMarkdown div iframe {
+            width: 100% !important;
+        }
         </style>
         """
     st.markdown(css, unsafe_allow_html=True)
