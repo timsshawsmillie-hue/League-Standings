@@ -69,6 +69,18 @@ def set_local_background(image_file):
                 padding: 1rem !important;
             }}
         }}
+
+        /* Force sortable component into a single vertical column league table layout */
+        .sortable-list, [data-testid="stVerticalBlock"] div div div div iframe {{
+            display: flex !important;
+            flex-direction: column !important;
+        }}
+        
+        /* Style individual team items to look like clean table rows */
+        .sortable-item {{
+            width: 100% !important;
+            margin-bottom: 5px !important;
+        }}
         </style>
         """
     st.markdown(css, unsafe_allow_html=True)
