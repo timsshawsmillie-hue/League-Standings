@@ -76,7 +76,14 @@ if is_admin:
   menu_options.extend(["Set Actual Final Positions", "Admin Management"])
   st.sidebar.success("Admin Unlocked!")
 
-menu = st.selectbox("Choose an action", menu_options)
+# --- CLEAN HORIZONTAL BUTTON OPTIONS ---
+menu = st.radio(
+    "Choose an action",
+    menu_options,
+    horizontal=True,
+    label_visibility="collapsed",
+)
+st.write("")  # Adds a tiny bit of spacing below the buttons
 
 teams_list = [
     "Arsenal",
